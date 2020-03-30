@@ -1,20 +1,11 @@
 public class Main {
-    /*
-
-    [[1 ,[4 ,[7 ]
-      2   5   8
-      3]  6]  9]
-
-     */
     public static void main(String[] args) {
 	    int[][] arr1 = {{1,2,3,4},{1,2,3,4},{1,2,3,4},{1,2,3,4}};
         int[][] arr2 = {{1,2,3,4},{1,2,3,4},{1,2,3,4},{1,2,3,4}};
 
-//        System.out.println(print2DArray(matrixAddition(arr1,arr2)));
-
-        System.out.println(print2DArray(strassen(arr1, arr2)));
-
-//        System.out.println(print2DArray(arr1) + " * " + print2DArray(arr2) + " = " + print2DArray(classicMatrixMultiply(arr1, arr2)));
+        System.out.println(print2DArray(arr1) + " * " + print2DArray(arr2) + " = " + print2DArray(classicMatrixMultiply(arr1, arr2)) + "(Classic)");
+        System.out.println(print2DArray(arr1) + " * " + print2DArray(arr2) + " = " + print2DArray(divideAndConquer(arr1, arr2))+ "(Divide and Conquer)");
+        System.out.println(print2DArray(arr1) + " * " + print2DArray(arr2) + " = " + print2DArray(strassen(arr1, arr2)) + "(Strassen's)");
 
     }
 
