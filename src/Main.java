@@ -1,60 +1,61 @@
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
 public class Main {
     public static void main(String[] args) {
-//        int[][] arr1 = {{1,2},{3,4}};
-//        int[][] arr2 = {{1,2},{3,4}};
+        int times = 25;
+        long classicRuntime, dacRuntime, strassenRuntime, start, stop;
+        int[][] matrix1, matrix2, result;
+        Random r = new Random();
 
-//        int[][] arr1 = {{1,2,3,4},{1,2,3,4},{1,2,3,4},{1,2,3,4}};
-//        int[][] arr2 = {{1,2,3,4},{1,2,3,4},{1,2,3,4},{1,2,3,4}};
-
-
-        int[][] arr1 = {{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16}};
-        int[][] arr2 = {{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},
-                {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16}};
+        for(int i = 0, n = 2; i < 10; i++, n *= 2){
+            classicRuntime = 0;
+            dacRuntime = 0;
+            strassenRuntime = 0;
 
 
-//        int[][] arr1 = {{1,2},{1,2}};
-//
-//        System.out.println("Input matrix: " + print2DArray(arr1));
-//        for(int i = 1; i < 5; i++){
-//            System.out.println("Quadrant " + i + ": " + print2DArray(divideMatrix(arr1,i)));
-//        }
+            matrix1 = createMatrix(n, r, 0, 99);
+            matrix2 = createMatrix(n, r, 0, 99);
+            result = new int[n][n];
+            for(int j = 0; j < times; j++){
 
-        System.out.println(print2DArray(arr1) + "\n\n * \n\n" + print2DArray(arr2) + "\n\n = \n\n" + print2DArray(classicMatrixMultiply(arr1, arr2)) + "\n(Classic)");
-        System.out.println(print2DArray(arr1) + "\n\n * \n\n" + print2DArray(arr2) + "\n\n = \n\n" + print2DArray(divideAndConquer(arr1, arr2, arr1.length))+ "\n(Divide and Conquer)");
-//        System.out.println(print2DArray(arr1) + " * " + print2DArray(arr2) + " = " + print2DArray(strassen(arr1, arr2)) + "(Strassen's)");
+                // run classic Matrix Multiplication
+                start = System.nanoTime();
+                classicMatrixMultiply(matrix1, matrix2);
+                stop = System.nanoTime();
+                classicRuntime += (stop - start);
 
+                // run divide and conquer Matrix Multiplication
+                start = System.nanoTime();
+                divideAndConquer(matrix1, matrix2, matrix1.length);
+                stop = System.nanoTime();
+                dacRuntime += (stop - start);
+
+                // run strassen Matrix Multiplication
+                start = System.nanoTime();
+                strassen(matrix1, matrix2, result, matrix1.length);
+                stop = System.nanoTime();
+                strassenRuntime += (stop - start);
+            }
+            System.out.printf("---- %d x %d Matrix Multiplication Results ----\n\n", n, n);
+            System.out.printf("%-20s %20d ns\n","Classic:", classicRuntime/times);
+            System.out.printf("%-20s %20d ns\n","Divide and Conquer:", dacRuntime/times);
+            System.out.printf("%-20s %20d ns\n\n", "Strassen's:", strassenRuntime/times);
+        }
     }
 
+    // generates a matrix of size n x n, populated by random integers in the range of min to max
+    private static int[][] createMatrix(int n, Random random, int min, int max){
+        int[][] result = new int[n][n];
 
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                result[i][j] = random.nextInt(max - min + 1) + min;
+            }
+        }
+
+        return result;
+    }
 
     private static int[][] classicMatrixMultiply(int[][] matrix1, int[][] matrix2){
         int n = matrix1.length;
@@ -85,12 +86,12 @@ public class Main {
             int[][] b12 = new int[n/2][n/2];
             int[][] b21 = new int[n/2][n/2];
             int[][] b22 = new int[n/2][n/2];
-            int[][] c11 = new int[n/2][n/2];
-            int[][] c12 = new int[n/2][n/2];
-            int[][] c21 = new int[n/2][n/2];
-            int[][] c22 = new int[n/2][n/2];
+            int[][] c11;
+            int[][] c12;
+            int[][] c21;
+            int[][] c22;
 
-
+            // partition the matricies into quadrants
             divideMatrix(matrix1, a11,1);
             divideMatrix(matrix1, a12,2);
             divideMatrix(matrix1, a21,3);
@@ -105,18 +106,83 @@ public class Main {
             c21 = matrixAddition(divideAndConquer(a21, b11, a21.length), divideAndConquer(a22, b21, a22.length));
             c22 = matrixAddition(divideAndConquer(a21, b12, a21.length), divideAndConquer(a22, b22, a22.length));
 
-            // put outputMatrix matrix together from c quadrants
+            // put c matrix together from c quadrants
             for(int i = 0; i < c11.length; i++){
                 for(int j = 0; j < c11.length; j++){
-                    c[i][j] += c11[i][j];
-                    c[i+n/2][j] += c12[i][j];
-                    c[i][j+n/2] += c21[i][j];
-                    c[i+n/2][j+n/2] += c22[i][j];
+                    c[i][j] = c11[i][j];
+                    c[i+n/2][j] = c12[i][j];
+                    c[i][j+n/2] = c21[i][j];
+                    c[i+n/2][j+n/2] = c22[i][j];
                 }
             }
         }
 
         return c;
+    }
+
+    private static void strassen(int[][] matrix1, int[][] matrix2, int[][] result, int n){
+        int[][] c11;
+        int[][] c12;
+        int[][] c21;
+        int[][] c22;
+
+        if(n == 2) {
+            result[0][0] = (matrix1[0][0] * matrix2[0][0]) + (matrix1[1][0] * matrix2[0][1]);
+            result[1][0] = (matrix1[0][0] * matrix2[1][0]) + (matrix1[1][0] * matrix2[1][1]);
+            result[0][1] = (matrix1[0][1] * matrix2[0][0]) + (matrix1[1][1] * matrix2[0][1]);
+            result[1][1] = (matrix1[0][1] * matrix2[1][0]) + (matrix1[1][1] * matrix2[1][1]);
+        } else {
+            n /= 2;
+            int[][] a11 = new int[n][n];
+            int[][] a12 = new int[n][n];
+            int[][] a21 = new int[n][n];
+            int[][] a22 = new int[n][n];
+            int[][] b11 = new int[n][n];
+            int[][] b12 = new int[n][n];
+            int[][] b21 = new int[n][n];
+            int[][] b22 = new int[n][n];
+            int[][] p = new int[n][n];
+            int[][] q = new int[n][n];
+            int[][] r = new int[n][n];
+            int[][] s = new int[n][n];
+            int[][] t = new int[n][n];
+            int[][] u = new int[n][n];
+            int[][] v = new int[n][n];
+            n *= 2;
+
+            // partition the matricies into quadrants
+            divideMatrix(matrix1, a11,1);
+            divideMatrix(matrix1, a12,2);
+            divideMatrix(matrix1, a21,3);
+            divideMatrix(matrix1, a22,4);
+            divideMatrix(matrix2, b11,1);
+            divideMatrix(matrix2, b12,2);
+            divideMatrix(matrix2, b21,3);
+            divideMatrix(matrix2, b22,4);
+
+            strassen(matrixAddition(a11,a22),matrixAddition(b11,b22), p, n/2);
+            strassen(matrixAddition(a21,a22),b11, q, n/2);
+            strassen(a11,matrixSubtraction(b12,b22), r, n/2);
+            strassen(a22, matrixSubtraction(b21, b11), s, n/2);
+            strassen(matrixAddition(a11,a12), b22, t, n/2);
+            strassen(matrixSubtraction(a21,a11),matrixAddition(b11, b12), u, n/2);
+            strassen(matrixSubtraction(a12,a22), matrixAddition(b21,b22), v, n/2);
+
+            c11 = matrixAddition(matrixSubtraction(matrixAddition(p,s), t), v);
+            c12 = matrixAddition(r,t);
+            c21 = matrixAddition(q,s);
+            c22 = matrixAddition(matrixSubtraction(matrixAddition(p,r), q), u);
+
+            // put result matrix together from c quadrants
+            for(int i = 0; i < c11.length; i++){
+                for(int j = 0; j < c11.length; j++){
+                    result[i][j] = c11[i][j];
+                    result[i+n/2][j] = c12[i][j];
+                    result[i][j+n/2] = c21[i][j];
+                    result[i+n/2][j+n/2] = c22[i][j];
+                }
+            }
+        }
     }
 
     private static void divideMatrix(int[][] matrix, int[][] outputMatrix, int quadrant){
@@ -154,74 +220,6 @@ public class Main {
         }
     }
 
-    private static int[][] strassen(int[][] matrix1, int[][] matrix2){
-        int n = matrix1.length/2;
-        int[][] result = new int[n*2][n*2];
-
-        if(n != 2) {
-            int[][] a11 = new int[n][n];
-            int[][] a12 = new int[n][n];
-            int[][] a21 = new int[n][n];
-            int[][] a22 = new int[n][n];
-            int[][] b11 = new int[n][n];
-            int[][] b12 = new int[n][n];
-            int[][] b21 = new int[n][n];
-            int[][] b22 = new int[n][n];
-            int[][] p;
-            int[][] q;
-            int[][] r;
-            int[][] s;
-            int[][] t;
-            int[][] u;
-            int[][] v;
-            int[][] c11;
-            int[][] c12;
-            int[][] c21;
-            int[][] c22;
-
-            // divide input matrices into four quadrants each
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    a11[j][i] = matrix1[j][i];
-                    a12[j][i] = matrix1[j + n][i];
-                    a21[j][i] = matrix1[j][i + n];
-                    a22[j][i] = matrix1[j + n][i + n];
-                    b11[j][i] = matrix2[j][i];
-                    b12[j][i] = matrix2[j + n][i];
-                    b21[j][i] = matrix2[j][i + n];
-                    b22[j][i] = matrix2[j + n][i + n];
-                }
-            }
-
-            p = strassen(matrixAddition(a11,a22),matrixAddition(b11,b22));
-            q = strassen(matrixAddition(a21,a22),b11);
-            r = strassen(a11,matrixSubtraction(b12,b22));
-            s = strassen(a22, matrixSubtraction(b21, b11));
-            t = strassen(matrixAddition(a11,a12), b22);
-            u = strassen(matrixSubtraction(a21,a11),matrixAddition(b11, b12));
-            v = strassen(matrixSubtraction(a12,a22), matrixAddition(b21,b22));
-            c11 = matrixSubtraction(matrixAddition(p,s),matrixAddition(t,v));
-            c12 = matrixAddition(r,t);
-            c21 = matrixAddition(q,s);
-            c22 = matrixSubtraction(matrixAddition(p,r), matrixAddition(q,u));
-
-            // put result matrix together from c quadrants
-            for(int i = 0; i < n; i++){
-                for(int j = 0; j < n; j++){
-                    result[i][j] = c11[i][j];
-                    result[i+n][j] = c12[i][j];
-                    result[i][j+n] = c21[i][j];
-                    result[i+n][j+n] = c22[i][j];
-                }
-            }
-
-        } else {
-            result = classicMatrixMultiply(matrix1, matrix2);
-        }
-
-        return result;
-    }
-
     private static int[][] matrixAddition(int[][] matrix1, int[][] matrix2){
         int n = matrix1.length;
         int[][] result = new int[n][n];
@@ -246,17 +244,6 @@ public class Main {
         }
 
         return result;
-    }
-
-    private static String print1DArray(int[] array){
-        StringBuilder output = new StringBuilder("{");
-
-        for(int i = 0; i < array.length; i++){
-            output.append(array[i]);
-            output.append(i != array.length - 1 ? "," : "}");
-        }
-
-        return output.toString();
     }
 
     private static String print2DArray(int[][] array){
